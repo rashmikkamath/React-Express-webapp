@@ -1,35 +1,56 @@
 import React from 'react';
 import { Link } from 'react-router';
+import Header from './Header';
+import SideMenu from './SideMenu';
+
+
+
 
 export default class Layout extends React.Component {
+  constructor() {
+  super();
+  this.state={
+    clickedIndex:""
+  }
+
+  this.handleGetData = this.handleGetData.bind(this);
+}
+
+ handleGetData(clickedLinkIndex,e){
+   e.preventDefault();
+   console.log(clickedLinkIndex);
+   this.setState({clickedIndex:clickedLinkIndex});
+
+   /*fetch('http://localhost:3000/src/images/Panda.png')
+    .then(function(response) {
+      return response.blob();
+    })
+    .then(function(imageBlob){
+      console.log("image")
+      document.querySelector('img').src = URL.createObjectURL(imageBlob);
+    })
+    .catch(function(err) {
+	// Error :(
+  });*/
+
+ }
   render() {
+    console.log("Layout render")
+    var self=this;
+    var children = React.Children.map(this.props.children, function (child) {
+        return React.cloneElement(child, {
+
+            clickedIndex:self.state.clickedIndex,
+        })
+    });
+
     return (
       <div className="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-        <header className="mdl-layout__header">
-          <div className="mdl-layout__header-row">
-
-            <span className="mdl-layout-title">Title</span>
-            <div className="mdl-layout-spacer"></div>
-            <nav className="mdl-navigation mdl-layout--large-screen-only">
-              <a className="mdl-navigation__link" href="images/Panda.png">Images</a>
-              <a className="mdl-navigation__link" href="">Link</a>
-              <a className="mdl-navigation__link" href="">Link</a>
-              <a className="mdl-navigation__link" href="">Link</a>
-            </nav>
-          </div>
-        </header>
-        <div className="mdl-layout__drawer">
-          <span className="mdl-layout-title">Title</span>
-          <nav className="mdl-navigation">
-            <a className="mdl-navigation__link" href="">Link</a>
-            <a className="mdl-navigation__link" href="">Link</a>
-            <a className="mdl-navigation__link" href="">Link</a>
-            <a className="mdl-navigation__link" href="">Link</a>
-          </nav>
-        </div>
+      <Header handleClick={this.handleGetData}/>
+      <SideMenu/>
         <main className="mdl-layout__content">
           <div className="page-content">
-            {this.props.children}
+            {children}
           </div>
         </main>
       </div>
